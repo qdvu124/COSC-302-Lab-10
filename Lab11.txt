@@ -1,0 +1,6 @@
+N1: To test the Algorithm, we need some fixed graphs and random graphs just to make sure that it runs well regardless of size
+N2: Have to run both algorithms on the same graph to see the runtime differences
+N3: Assumption is that java's PQ has expected runtime for the operations
+N4: Java's PriorityQueue API does not support decrease key, so assumptions about the runtime of the operation might not hold
+N5: Dijkstra's class has a priority queue and an adjacency list. Constructor takes in a matrix and builds adjacency list
+N6: Including an array in the class to run both versions
