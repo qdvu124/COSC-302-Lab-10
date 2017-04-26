@@ -4,3 +4,6 @@ N3: Assumption is that java's PQ has expected runtime for the operations
 N4: Java's PriorityQueue API does not support decrease key, so assumptions about the runtime of the operation might not hold
 N5: Dijkstra's class has a priority queue and an adjacency list. Constructor takes in a matrix and builds adjacency list
 N6: Including an array in the class to run both versions
+N7: Might need two adjLists for each implementation, since we mutate the list as we go. Or do we?
+N8: Need an array of predecessor to keep track of where the edge is coming from. Or maybe not
+N9: 7 seems to be wrong. We go through each vertex once and relaxes all of its edges. No mutation required.

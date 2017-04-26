@@ -1,19 +1,19 @@
 // Helper class to represent objects we will put into the queue
 public class Vertex {
 	int id;
-	int distance;
-	
+	float distance;
+
 	public Vertex(int id) {
 		this.id = id;
-		distance= Integer.MAX_VALUE;
+		distance= FLOAT.MAX_VALUE;
 	}
-	
-	public Vertex(int id, int distance) {
+
+	public Vertex(int id, float distance) {
 		this.id = id;
 		this.distance = distance;
 	}
-	
-	void setDistance(int distance) {
+
+	void setDistance(float distance) {
 		this.distance = distance;
 	}
 }

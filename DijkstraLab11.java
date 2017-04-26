@@ -4,57 +4,91 @@ import java.util.LinkedList;
 import java.util.ArrayList;
 
 public class DijkstraLab11 {
-	
+
 	PriorityQueue<Vertex> minHeap;
-	Vertex vertexArray[];
+	float vertexArray[];
+	// We need two adj
 	ArrayList<LinkedList<Vertex>> adjList;
-	
+
 	// Comparator to sort the vertices in the heap
 	Comparator<Vertex> comparator = new Comparator<Vertex>() {
 		public int compare(Vertex a, Vertex b) {
 			return a.distance- b.distance;
 		}
 	};
-	
-	// Constructor for the class
-	public DijkstraLab11(int src, int size, int graph[][]) {
-		vertexArray = new Vertex[size];
-		adjList = new ArrayList<LinkedList<Vertex>>(size);
-		minHeap = new PriorityQueue<Vertex>(size, comparator);
+
+	// Helper method to initialize minHeap and vertexArray
+	public static initialize(int src, int size) {
 		Vertex currentVertex;
-		// Adding vertices into the heap and the array. Starting vertex has distance 0, the rest set to INF
-		for(int i = 0; i < size; i++) {
-			currentVertex = new Vertex(i);
-			if(i == src) {
-				currentVertex.setDistance(0);
+		for(int i = 0; i < noVert; i++) {
+			if (i == src) {
+				currentVertex = new Vertex(i, 0);
 				minHeap.add(currentVertex);
-				vertexArray[i] = currentVertex;
-				continue;
+				vertexArray[i] = 0;
 			}
-			minHeap.add(currentVertex);
-			vertexArray[i] = currentVertex;
+			else {
+				currentVertex = new Vertex(i);
+				minHeap.add(currentVertex);
+				vertexArray[i] = FLOAT.MAX_VALUE;
+			}
 		}
-		initializeAdjList(size, graph);
 	}
-	
-	// Initialize the adjacency list
-	void initializeAdjList(int size, int graph[][]) {
+
+	// Dijkstra's algorithm using minHeap
+
+	static void dijkstraMinHeap(int src) {
+		long startTime, endTime;
+		HashSet<Integer> visited = new HashSet<Integer>();
 		Vertex currentVertex;
-		for(int i = 0; i < size; i++) {
-			for(int j = 0; j < size; j++) {
-				if(0 != graph[i][j]) {
-					currentVertex = new Vertex(j, graph[i][j]);
-					adjList.get(i).add(currentVertex);
-				}
+		LinkedList<Vertex> currentList;
+		Iterator<Vertex> iter;
+		int currentNode;
+		startTime = System.currentTimeMillis();
+		while(!minHeap.isEmpty()) {
+			currentVertex = minHeap.peek();
+			minHeap.remove(currentVertex);
+			if(visited.contains(currentVertex.id))
+				continue;
+			currentNode = currentVertex.id;
+			currentList = adjList.get(currentNode);
+			iter = currentList.iterator();
+			while(iter.hasNext()) {
+				currentVe
 			}
 		}
+		endTime = System.currentTimeMillis();
 	}
-	
+
+	// Slower Dijkstra's algorithm using vertexArray
+	static void dijkstraArray(int src) {
+
+	}
 	// Main testing method
-	public static boolean Run(int s, String filename) {
+	public static boolean Run(int src, String filename) {
+		File file = new File(filename);
+		Scanner input = new Scanner(file);
+		// Reading the number of vertices and edges
+		int noVert = input.nextInt();
+		int noEdges = input.nextInt();
+		int start, end;
+		Vertex currentVertex;
+		float weight;
+		adjList = new ArrayList<LinkedList<Vertex>>(noVert);
+		minHeap = new PriorityQueue<Vertex>(noVert, comparator);
+		vertexArray = new Vertex[noVert];
+		initialize(src, noVert);
+		for(int i = 0; i < noEdges; i++) {
+			start = input.nextInt();
+			end = input.nextInt();
+			weight = input.nextFloat();
+			currentVertex = new Vertex(end, weight);
+			adjList.get(start).add(currentVertex);
+		}
+		dijkstraMinHeap(src);
+		dijkstraArray(src);
 		return true;
 	}
-	
+
 	public static void main(String args[]) {
 		// Testing functions go here
 	}
