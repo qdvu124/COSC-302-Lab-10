@@ -57,6 +57,8 @@ public class DijkstraLab11 {
 		while(!minHeap.isEmpty()) {
 			currentVertex = minHeap.peek();
 			minHeap.remove(currentVertex);
+			if(Float.MAX_VALUE == currentVertex.distance)
+				continue;
 			currentNode = currentVertex.id;
 			currentList = adjList.get(currentNode);
 			iter = currentList.iterator();
@@ -102,6 +104,10 @@ public class DijkstraLab11 {
 				weight = input.nextFloat();
 				currentVertex = new Vertex(end, weight);
 				adjList.get(start).add(currentVertex);
+				// Goes both ways
+				currentVertex = new Vertex(start, weight);
+				adjList.get(end).add(currentVertex);
+
 			}
 			dijkstraMinHeap(src, distanceArray);
 			dijkstraArray(src);
@@ -116,6 +122,6 @@ public class DijkstraLab11 {
 
 	public static void main(String args[]) {
 		// Testing functions go here
-		Run(0, "src/test.txt");
+		Run(0, "src/classGraph.txt");
 	}
 }
