@@ -12,3 +12,18 @@ N11: Confirmed with professor that we do not need the predecessor array
 N12: Implementation successful for the minHeap version
 N13: Changed to undirected graph implementation
 N14: Implementation successful for the array version
+N15: Disabled printing (second last line of each function) for testing performance purposes. Uncomment to see that the algorithm is running correctly
+N16: Tried running on dense graphs of different sizes (2^1 to 2^10)
+Results:
+  MinHeap	Array
+  0	0
+  0	0
+  0	0
+  0	0
+  0	1
+  5	1
+  8	2
+  21	10
+  46	19
+This is expected since if the edges are fully populated, E = (V choose 2), leading to minHeap implementation having O(V^2logV) which is worst than the array implementation
+N17: Tried running on sparse graphs

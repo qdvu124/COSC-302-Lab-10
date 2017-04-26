@@ -6,7 +6,9 @@ import java.util.PriorityQueue;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Random;
 
 public class DijkstraLab11 {
 
@@ -38,22 +40,21 @@ public class DijkstraLab11 {
 			vertexArray[i] = currentVertex; adjList.add(i, new LinkedList<Vertex>());
 		}
 	}
-	
+
 	// Helper method to display the results
 	static void print(Vertex vertexArray[]) {
 		for(int i = 0; i < vertexArray.length; i++)
 			System.out.printf("%d %.2f\n", vertexArray[i].id, vertexArray[i].distance);
 	}
-	
+
 	//
 	static void print(float distanceArray[]) {
 		for(int i = 0; i < distanceArray.length; i++)
 			System.out.printf("%d %.2f\n", i, distanceArray[i]);
 	}
 
-
 	// Dijkstra's algorithm using minHeap
-	static void dijkstraMinHeap(int src, Vertex[] vertexArray) {
+	static long dijkstraMinHeap(int src, Vertex[] vertexArray) {
 		long startTime, endTime;
 		Vertex currentVertex;
 		LinkedList<Vertex> currentList;
@@ -82,12 +83,12 @@ public class DijkstraLab11 {
 			}
 		}
 		endTime = System.currentTimeMillis();
-		print(vertexArray);
-		System.out.printf("Time taken: %d ms\n", endTime - startTime);
+		//print(vertexArray);
+		return (endTime - startTime);
 	}
 
 	// Slower Dijkstra's algorithm using distanceArray
-	static void dijkstraArray(int src) {
+	static long dijkstraArray(int src) {
 		long startTime, endTime;
 		LinkedList<Vertex> currentList;
 		HashSet<Integer> visited = new HashSet<Integer>();
@@ -112,10 +113,10 @@ public class DijkstraLab11 {
 			}
 		}
 		endTime = System.currentTimeMillis();
-		print(distanceArray);
-		System.out.printf("Time taken: %d ms\n", endTime - startTime);
+		//print(distanceArray);
+		return (endTime - startTime);
 	}
-	
+
 	// Helper method to extract the index of the vertex with the current min distance from source
 	private static int extractMin(float[] distanceArray,
 			HashSet<Integer> visited) {
@@ -163,19 +164,82 @@ public class DijkstraLab11 {
 				adjList.get(end).add(currentVertex);
 
 			}
-			dijkstraMinHeap(src, vertexArray);
-			dijkstraArray(src);
+			System.out.printf("%d\t%d\n", dijkstraMinHeap(src, vertexArray), dijkstraArray(src));
 			input.close();
 			return true;
 		}
-		catch (FileNotFoundException e) {
-			System.out.println("Error opening file");
+		catch (IOException e) {
+			System.out.println("Error opening file!");
 			return false;
 		}
 	}
 
+	static void generateDenseGraph(int size) {
+		int start, end;
+		float weight;
+		Random rand = new Random();
+		try {
+			PrintWriter fileWriter = new PrintWriter("randomDenseGraph.txt", "UTF-8");
+			fileWriter.println(size);
+			fileWriter.println(size*(size-1)/2);
+			for(int i = 0; i < size; i++) {
+				for(int j = i + 1; j < size; j++){
+					weight = rand.nextFloat();
+					fileWriter.printf("%d %d %.2f\n", i, j, weight);
+				}
+			}
+			fileWriter.close();
+		}
+		catch (IOException e) {
+			System.out.println("Error writing to file!");
+		}
+	}
+
+
+static void generateSparseGraph(int size) {
+		int start, end;
+		int adj[][] = new int[size][size];
+		float weight;
+		Random rand = new Random();
+		int edges = rand.nextInt(size * (size - 1) / 2);
+		try {
+			PrintWriter fileWriter = new PrintWriter("randomSparseGraph.txt", "UTF-8");
+			fileWriter.println(size);
+			fileWriter.println(edges);
+			for(int i = 0; i < edges; i++) {
+				start = rand.nextInt(size);
+				end = rand.nextInt(size);
+				while(start == end) {
+					end = rand.nextInt(size);
+				}
+				if(adj[start][end] == 1 || adj[end][start] == 1)
+					continue;
+				weight = rand.nextFloat();
+				fileWriter.printf("%d %d %.2f\n", start, end, weight);
+				adj[start][end] = 1;
+				adj[end][start] = 1;
+			}
+			fileWriter.close();
+		}
+		catch (IOException e) {
+			System.out.println("Error writing to file!");
+		}
+	}
 	public static void main(String args[]) {
 		// Testing functions go here
-		Run(0, "src/classGraph.txt");
+		System.out.println("Dense graphs");
+		System.out.printf("MinHeap\tArray\n");
+		for(int size = 2; size < Math.pow(2,10); size *= 2) {
+			// Generate a very dense graph for testing purposes
+			generateDenseGraph(size);
+			Run(0, "randomDenseGraph.txt");
+		}
+		System.out.println("Sparse graphs");
+		System.out.printf("MinHeap\tArray\n");
+		for(int size = 2; size < Math.pow(2,10); size *= 2) {
+			// Generate a very dense graph for testing purposes
+			generateSparseGraph(size);
+			Run(0, "randomSparseGraph.txt");
+		}
 	}
 }
