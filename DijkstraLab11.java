@@ -61,8 +61,10 @@ public class DijkstraLab11 {
 		int currentNode, destination;
 		startTime = System.currentTimeMillis();
 		while(!minHeap.isEmpty()) {
+			// Removing the top of the queue
 			currentVertex = minHeap.peek();
 			minHeap.remove(currentVertex);
+			// If the top of the queue is at INF distance, we know nothing else is reachable, thus break
 			if(Float.MAX_VALUE == currentVertex.distance)
 				break;
 			currentNode = currentVertex.id;
@@ -72,6 +74,7 @@ public class DijkstraLab11 {
 				currentVertex = iter.next();
 				destination = currentVertex.id;
 				if(vertexArray[destination].distance > vertexArray[currentNode].distance + currentVertex.distance) {
+					// Using vertexArray aka "pointers" to help with adding and removing from the heap.
 					minHeap.remove(vertexArray[destination]);
 					vertexArray[destination].setDistance(vertexArray[currentNode].distance + currentVertex.distance);
 					minHeap.add(vertexArray[destination]);
@@ -86,14 +89,47 @@ public class DijkstraLab11 {
 	// Slower Dijkstra's algorithm using distanceArray
 	static void dijkstraArray(int src) {
 		long startTime, endTime;
+		LinkedList<Vertex> currentList;
 		HashSet<Integer> visited = new HashSet<Integer>();
+		Iterator<Vertex> iter;
+		int currentNode, destination;
+		Vertex currentVertex;
 		startTime = System.currentTimeMillis();
-		visited.add(src);
+		while(distanceArray.length != visited.size()) {
+			currentNode = extractMin(distanceArray, visited);
+			// If the shortest distance from source is INF, nothing else is reachable, thus break
+			if(Float.MAX_VALUE == distanceArray[currentNode])
+				break;
+			visited.add(currentNode);
+			currentList = adjList.get(currentNode);
+			iter = currentList.iterator();
+			while(iter.hasNext()) {
+				currentVertex = iter.next();
+				destination = currentVertex.id;
+				if(distanceArray[destination] > distanceArray[currentNode] + currentVertex.distance) {
+					distanceArray[destination] = distanceArray[currentNode] + currentVertex.distance;
+				}
+			}
+		}
 		endTime = System.currentTimeMillis();
 		print(distanceArray);
 		System.out.printf("Time taken: %d ms\n", endTime - startTime);
-
 	}
+	
+	// Helper method to extract the index of the vertex with the current min distance from source
+	private static int extractMin(float[] distanceArray,
+			HashSet<Integer> visited) {
+		int minIndex = 0;
+		float minDistance = Float.MAX_VALUE;
+		for(int i = 0; i < distanceArray.length; i++) {
+			if(distanceArray[i] <= minDistance && !visited.contains(i)) {
+				minIndex = i;
+				minDistance = distanceArray[i];
+			}
+		}
+		return minIndex;
+	}
+
 	// Main testing method
 	public static boolean Run(int src, String filename) {
 		File file = new File(filename);
@@ -101,6 +137,11 @@ public class DijkstraLab11 {
 			Scanner input = new Scanner(file);
 			// Reading the number of vertices and edges
 			int noVert = input.nextInt();
+			if(src >= noVert || src < 0) {
+				System.out.println("Invalid starting node");
+				input.close();
+				return false;
+			}
 			int noEdges = input.nextInt();
 			int start, end;
 			Vertex currentVertex;

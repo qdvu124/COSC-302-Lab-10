@@ -11,3 +11,4 @@ N10: Keeping an array of Vertices to keep track of vertex objects. Otherwise can
 N11: Confirmed with professor that we do not need the predecessor array
 N12: Implementation successful for the minHeap version
 N13: Changed to undirected graph implementation
+N14: Implementation successful for the array version
