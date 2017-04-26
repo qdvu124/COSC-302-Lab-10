@@ -54,7 +54,7 @@ public class DijkstraLab11 {
 	}
 
 	// Dijkstra's algorithm using minHeap
-	static long dijkstraMinHeap(int src, Vertex[] vertexArray) {
+	static long dijkstraMinHeap(int src, Vertex[] vertexArray, boolean print) {
 		long startTime, endTime;
 		Vertex currentVertex;
 		LinkedList<Vertex> currentList;
@@ -83,12 +83,13 @@ public class DijkstraLab11 {
 			}
 		}
 		endTime = System.currentTimeMillis();
-		//print(vertexArray);
+		if(print)
+			print(vertexArray);
 		return (endTime - startTime);
 	}
 
 	// Slower Dijkstra's algorithm using distanceArray
-	static long dijkstraArray(int src) {
+	static long dijkstraArray(int src, boolean print) {
 		long startTime, endTime;
 		LinkedList<Vertex> currentList;
 		HashSet<Integer> visited = new HashSet<Integer>();
@@ -113,7 +114,8 @@ public class DijkstraLab11 {
 			}
 		}
 		endTime = System.currentTimeMillis();
-		//print(distanceArray);
+		if(print)
+			print(distanceArray);
 		return (endTime - startTime);
 	}
 
@@ -132,7 +134,7 @@ public class DijkstraLab11 {
 	}
 
 	// Main testing method
-	public static boolean Run(int src, String filename) {
+	public static boolean Run(int src, String filename, boolean print) {
 		File file = new File(filename);
 		try {
 			Scanner input = new Scanner(file);
@@ -143,7 +145,7 @@ public class DijkstraLab11 {
 				input.close();
 				return false;
 			}
-			int noEdges = input.nextInt();
+			input.nextInt();
 			int start, end;
 			Vertex currentVertex;
 			float weight;
@@ -153,7 +155,7 @@ public class DijkstraLab11 {
 			// Helper array with "pointers" to node objects, since otherwise we would not be able to manipulate heap
 			Vertex[] vertexArray = new Vertex[noVert];
 			initialize(src, noVert, vertexArray);
-			for(int i = 0; i < noEdges; i++) {
+			while(input.hasNext()) {
 				start = input.nextInt();
 				end = input.nextInt();
 				weight = input.nextFloat();
@@ -164,7 +166,7 @@ public class DijkstraLab11 {
 				adjList.get(end).add(currentVertex);
 
 			}
-			System.out.printf("%d\t%d\n", dijkstraMinHeap(src, vertexArray), dijkstraArray(src));
+			System.out.printf("%d\t%d\n", dijkstraMinHeap(src, vertexArray, print), dijkstraArray(src, print));
 			input.close();
 			return true;
 		}
@@ -175,7 +177,6 @@ public class DijkstraLab11 {
 	}
 
 	static void generateDenseGraph(int size) {
-		int start, end;
 		float weight;
 		Random rand = new Random();
 		try {
@@ -201,7 +202,7 @@ static void generateSparseGraph(int size) {
 		int adj[][] = new int[size][size];
 		float weight;
 		Random rand = new Random();
-		int edges = rand.nextInt(size * (size - 1) / 2);
+		int edges = rand.nextInt(size * 5);
 		try {
 			PrintWriter fileWriter = new PrintWriter("randomSparseGraph.txt", "UTF-8");
 			fileWriter.println(size);
@@ -226,20 +227,23 @@ static void generateSparseGraph(int size) {
 		}
 	}
 	public static void main(String args[]) {
+		// Testing for given graphs
+		Run(0, "src/test.txt", true);
+		Run(0, "src/classGraph.txt", true);
 		// Testing functions go here
 		System.out.println("Dense graphs");
 		System.out.printf("MinHeap\tArray\n");
 		for(int size = 2; size < Math.pow(2,10); size *= 2) {
 			// Generate a very dense graph for testing purposes
 			generateDenseGraph(size);
-			Run(0, "randomDenseGraph.txt");
+			Run(0, "randomDenseGraph.txt", false);
 		}
 		System.out.println("Sparse graphs");
 		System.out.printf("MinHeap\tArray\n");
 		for(int size = 2; size < Math.pow(2,10); size *= 2) {
-			// Generate a very dense graph for testing purposes
+			// Generate a sparse graph for testing purposes
 			generateSparseGraph(size);
-			Run(0, "randomSparseGraph.txt");
+			Run(0, "randomSparseGraph.txt", false);
 		}
 	}
 }

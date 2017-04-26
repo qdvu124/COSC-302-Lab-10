@@ -16,14 +16,28 @@ N15: Disabled printing (second last line of each function) for testing performan
 N16: Tried running on dense graphs of different sizes (2^1 to 2^10)
 Results:
   MinHeap	Array
-  0	0
-  0	0
-  0	0
-  0	0
-  0	1
-  5	1
-  8	2
-  21	10
-  46	19
+  0			0
+  0			0
+  0			0
+  0			0
+  0			1
+  5			1
+  8			2
+  21		10
+  46		19
 This is expected since if the edges are fully populated, E = (V choose 2), leading to minHeap implementation having O(V^2logV) which is worst than the array implementation
+
 N17: Tried running on sparse graphs
+Results:
+	MinHeap	Array
+	0		0
+	0		0
+	0		0
+	1		0
+	0		0
+	0		0
+	0		1
+	1		2
+	2		5
+	
+This is also expected since if the Graph is sparse, the runtime of the minHeap implementation is O(VlogV) which is better than O(V^2) by the runtime of the array implementation 
