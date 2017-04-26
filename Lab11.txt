@@ -8,3 +8,5 @@ N7: Might need two adjLists for each implementation, since we mutate the list as
 N8: Need an array of predecessor to keep track of where the edge is coming from. Or maybe not
 N9: 7 seems to be wrong. We go through each vertex once and relaxes all of its edges. No mutation required.
 N10: Keeping an array of Vertices to keep track of vertex objects. Otherwise can't modify the heap with remove() since it takes a pointer
+N11: Confirmed with professor that we do not need the predecessor array
+N12: Implementation successful for the minHeap version

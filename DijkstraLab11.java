@@ -22,7 +22,7 @@ public class DijkstraLab11 {
 	};
 
 	// Helper method to initialize minHeap and vertexArray
-	public static void initialize(int src, int noVert, Vertex[] distanceArray) {
+	static void initialize(int src, int noVert, Vertex[] distanceArray) {
 		Vertex currentVertex;
 		for(int i = 0; i < noVert; i++) {
 			if (i == src) {
@@ -36,13 +36,19 @@ public class DijkstraLab11 {
 				vertexArray[i] = Float.MAX_VALUE;
 			}
 			distanceArray[i] = currentVertex;
+			adjList.add(i, new LinkedList<Vertex>());
 		}
+	}
+	
+	// Helper method to display the results
+	static void print(Vertex distanceArray[]) {
+		for(int i = 0; i < distanceArray.length; i++)
+			System.out.printf("%d %.2f\n", distanceArray[i].id, distanceArray[i].distance);
 	}
 
 	// Dijkstra's algorithm using minHeap
 	static void dijkstraMinHeap(int src, Vertex[] distanceArray) {
 		long startTime, endTime;
-		HashSet<Integer> visited = new HashSet<Integer>();
 		Vertex currentVertex;
 		LinkedList<Vertex> currentList;
 		Iterator<Vertex> iter;
@@ -57,7 +63,7 @@ public class DijkstraLab11 {
 			while(iter.hasNext()) {
 				currentVertex = iter.next();
 				destination = currentVertex.id;
-				if(distanceArray[destination].distance < distanceArray[currentNode].distance + currentVertex.distance) {
+				if(distanceArray[destination].distance > distanceArray[currentNode].distance + currentVertex.distance) {
 					minHeap.remove(distanceArray[destination]);
 					distanceArray[destination].setDistance(distanceArray[currentNode].distance + currentVertex.distance);
 					minHeap.add(distanceArray[destination]);
@@ -65,6 +71,8 @@ public class DijkstraLab11 {
 			}
 		}
 		endTime = System.currentTimeMillis();
+		print(distanceArray);
+		System.out.printf("Time taken: %d ms\n", endTime - startTime);
 	}
 
 	// Slower Dijkstra's algorithm using vertexArray
@@ -97,6 +105,7 @@ public class DijkstraLab11 {
 			}
 			dijkstraMinHeap(src, distanceArray);
 			dijkstraArray(src);
+			input.close();
 			return true;
 		}
 		catch (FileNotFoundException e) {
@@ -107,6 +116,6 @@ public class DijkstraLab11 {
 
 	public static void main(String args[]) {
 		// Testing functions go here
-		Run(0, "test.txt");
+		Run(0, "src/test.txt");
 	}
 }
