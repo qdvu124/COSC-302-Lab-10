@@ -5,6 +5,7 @@ public class Vertex {
 
 	public Vertex(int id) {
 		this.id = id;
+		// Imitates the behavior of INFINITY
 		distance= Float.MAX_VALUE;
 	}
 

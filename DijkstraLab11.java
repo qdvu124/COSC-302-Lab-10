@@ -1,17 +1,17 @@
 import java.util.Scanner;
 import java.io.File;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.LinkedList;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.io.FileNotFoundException;
 
 public class DijkstraLab11 {
 
 	static PriorityQueue<Vertex> minHeap;
-	static float vertexArray[];
+	static float distanceArray[];
 	static ArrayList<LinkedList<Vertex>> adjList;
 
 	// Comparator to sort the vertices in the heap
@@ -22,32 +22,38 @@ public class DijkstraLab11 {
 	};
 
 	// Helper method to initialize minHeap and vertexArray
-	static void initialize(int src, int noVert, Vertex[] distanceArray) {
+	static void initialize(int src, int noVert, Vertex[] vertexArray) {
 		Vertex currentVertex;
 		for(int i = 0; i < noVert; i++) {
 			if (i == src) {
 				currentVertex = new Vertex(i, 0);
 				minHeap.add(currentVertex);
-				vertexArray[i] = 0;
+				distanceArray[i] = 0;
 			}
 			else {
 				currentVertex = new Vertex(i);
 				minHeap.add(currentVertex);
-				vertexArray[i] = Float.MAX_VALUE;
+				distanceArray[i] = Float.MAX_VALUE;
 			}
-			distanceArray[i] = currentVertex;
-			adjList.add(i, new LinkedList<Vertex>());
+			vertexArray[i] = currentVertex; adjList.add(i, new LinkedList<Vertex>());
 		}
 	}
 	
 	// Helper method to display the results
-	static void print(Vertex distanceArray[]) {
+	static void print(Vertex vertexArray[]) {
+		for(int i = 0; i < vertexArray.length; i++)
+			System.out.printf("%d %.2f\n", vertexArray[i].id, vertexArray[i].distance);
+	}
+	
+	//
+	static void print(float distanceArray[]) {
 		for(int i = 0; i < distanceArray.length; i++)
-			System.out.printf("%d %.2f\n", distanceArray[i].id, distanceArray[i].distance);
+			System.out.printf("%d %.2f\n", i, distanceArray[i]);
 	}
 
+
 	// Dijkstra's algorithm using minHeap
-	static void dijkstraMinHeap(int src, Vertex[] distanceArray) {
+	static void dijkstraMinHeap(int src, Vertex[] vertexArray) {
 		long startTime, endTime;
 		Vertex currentVertex;
 		LinkedList<Vertex> currentList;
@@ -58,27 +64,34 @@ public class DijkstraLab11 {
 			currentVertex = minHeap.peek();
 			minHeap.remove(currentVertex);
 			if(Float.MAX_VALUE == currentVertex.distance)
-				continue;
+				break;
 			currentNode = currentVertex.id;
 			currentList = adjList.get(currentNode);
 			iter = currentList.iterator();
 			while(iter.hasNext()) {
 				currentVertex = iter.next();
 				destination = currentVertex.id;
-				if(distanceArray[destination].distance > distanceArray[currentNode].distance + currentVertex.distance) {
-					minHeap.remove(distanceArray[destination]);
-					distanceArray[destination].setDistance(distanceArray[currentNode].distance + currentVertex.distance);
-					minHeap.add(distanceArray[destination]);
+				if(vertexArray[destination].distance > vertexArray[currentNode].distance + currentVertex.distance) {
+					minHeap.remove(vertexArray[destination]);
+					vertexArray[destination].setDistance(vertexArray[currentNode].distance + currentVertex.distance);
+					minHeap.add(vertexArray[destination]);
 				}
 			}
 		}
 		endTime = System.currentTimeMillis();
-		print(distanceArray);
+		print(vertexArray);
 		System.out.printf("Time taken: %d ms\n", endTime - startTime);
 	}
 
-	// Slower Dijkstra's algorithm using vertexArray
+	// Slower Dijkstra's algorithm using distanceArray
 	static void dijkstraArray(int src) {
+		long startTime, endTime;
+		HashSet<Integer> visited = new HashSet<Integer>();
+		startTime = System.currentTimeMillis();
+		visited.add(src);
+		endTime = System.currentTimeMillis();
+		print(distanceArray);
+		System.out.printf("Time taken: %d ms\n", endTime - startTime);
 
 	}
 	// Main testing method
@@ -94,10 +107,10 @@ public class DijkstraLab11 {
 			float weight;
 			adjList = new ArrayList<LinkedList<Vertex>>(noVert);
 			minHeap = new PriorityQueue<Vertex>(noVert, comparator);
-			vertexArray = new float[noVert];
+			distanceArray = new float[noVert];
 			// Helper array with "pointers" to node objects, since otherwise we would not be able to manipulate heap
-			Vertex[] distanceArray = new Vertex[noVert];
-			initialize(src, noVert, distanceArray);
+			Vertex[] vertexArray = new Vertex[noVert];
+			initialize(src, noVert, vertexArray);
 			for(int i = 0; i < noEdges; i++) {
 				start = input.nextInt();
 				end = input.nextInt();
@@ -109,7 +122,7 @@ public class DijkstraLab11 {
 				adjList.get(end).add(currentVertex);
 
 			}
-			dijkstraMinHeap(src, distanceArray);
+			dijkstraMinHeap(src, vertexArray);
 			dijkstraArray(src);
 			input.close();
 			return true;
