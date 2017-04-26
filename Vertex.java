@@ -5,7 +5,7 @@ public class Vertex {
 
 	public Vertex(int id) {
 		this.id = id;
-		distance= FLOAT.MAX_VALUE;
+		distance= Float.MAX_VALUE;
 	}
 
 	public Vertex(int id, float distance) {
