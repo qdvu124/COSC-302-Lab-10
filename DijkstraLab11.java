@@ -197,7 +197,7 @@ public class DijkstraLab11 {
 	}
 
 
-static void generateSparseGraph(int size) {
+	static void generateSparseGraph(int size) {
 		int start, end;
 		int adj[][] = new int[size][size];
 		float weight;
